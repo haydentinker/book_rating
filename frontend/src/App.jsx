@@ -1,10 +1,10 @@
 import React from 'react'
 import { Route,Routes } from 'react-router';
-import { Home } from './pages/Home';
-import { CreateBook} from './pages/CreateBook';
-import { EditBook } from './pages/EditBook';
-import { DeleteBook } from './pages/DeleteBook';
-import { ShowBook } from './pages/ShowBook';
+import { Home } from './pages/Home.jsx';
+import { CreateBook} from './pages/CreateBook.jsx';
+import { EditBook } from './pages/EditBook.jsx';
+import { DeleteBook } from './pages/DeleteBook.jsx';
+import { ShowBook } from './pages/ShowBook.jsx';
 const App = () => {
   return (
     <Routes>
