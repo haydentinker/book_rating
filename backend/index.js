@@ -2,6 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import { PORT, mongoDBURL } from "./config.js";
 import book_router from "./routes/booksRoute.js";
+import auth_router from "./routes/authRoute.js";
+import cookieParser from "cookie-parser";
 import cors from 'cors';
 const app = express();
 app.use(cors())
@@ -15,9 +17,14 @@ app.get("/", (request, response) => {
   console.log(request);
   return response.status(200).send("HELLO");
 });
-app.use('/books',book_router)
+app.use('/books',book_router);
+app.use('/auth',auth_router);
+app.use(cookieParser())
 mongoose
-  .connect(mongoDBURL)
+  .connect(mongoDBURL,{
+    useNewUrlParser:true,
+    useUnifiedTopology:true,
+  })
   .then(() => {
     console.log("App connected to DB");
     app.listen(PORT, () => {
