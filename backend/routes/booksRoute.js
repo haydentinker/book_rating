@@ -1,7 +1,10 @@
 import express from "express";
 import { Book } from "../models/bookModel.js";
+import { AuthMiddleware } from "../middlewares/AuthMiddleware.js";
+import cookieParser from "cookie-parser";
 const book_router=express.Router();
 
+book_router.use(AuthMiddleware)
 book_router.get('/',async(request,response)=>{
     try{
         const books=await Book.find({});

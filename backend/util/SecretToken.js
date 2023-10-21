@@ -1,8 +1,8 @@
-import { TOKEN_KEY } from "./config.js";
-const jwt = require("jsonwebtoken");
+import { TOKEN_KEY } from "../config.js";
+import jsonwebtoken from 'jsonwebtoken';
 
 export const createSecretToken=(id)=>{
-    return jwt.sign({id},TOKEN_KEY,{
+    return jsonwebtoken.sign({id},TOKEN_KEY,{
         expiresIn:3*24*60*60,
     });
 };

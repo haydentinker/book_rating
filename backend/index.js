@@ -17,9 +17,10 @@ app.get("/", (request, response) => {
   console.log(request);
   return response.status(200).send("HELLO");
 });
+app.use(cookieParser())
 app.use('/books',book_router);
 app.use('/auth',auth_router);
-app.use(cookieParser())
+
 mongoose
   .connect(mongoDBURL,{
     useNewUrlParser:true,
