@@ -12,13 +12,9 @@ export async function SignUp (request,response,next){
         }
         const user= await User.create({email,password,username,createdAt});
         const token =createSecretToken(user._id);
-        response.cookie("token",token,{
-            withCredentials:true,
-            httpOnly:false,
-        })
         response
             .status(201)
-            .json({message:"User signed up successfully",success:true,user})
+            .json({message:"User signed up successfully",success:true,token:token})
         next();
     }catch(error){
         console.error(error);

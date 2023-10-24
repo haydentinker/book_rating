@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { useAuth} from '../context/AuthContext';
 export const Signup = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [email, setEmail] = useState("")
     const { enqueueSnackbar } = useSnackbar();
+    const { token, setToken } = useAuth();
     const navigate = useNavigate();
     const handleSignUp = async (event) => {
         event.preventDefault();
@@ -17,11 +19,12 @@ export const Signup = () => {
         }
         try {
             const response = await axios.post(`http://localhost:5555/auth/signup`, data);
-            console.log(response.headers['set-cookie'])
+            const newToken = response.data['token'];
+            setToken( newToken );
+    
             enqueueSnackbar('Successfully signed up!', { variant: 'success' })
         } catch (error) {
             console.log(error);
-            console.log('hi')
             enqueueSnackbar('Error occurred when signing up please try again.', { variant: 'error' })
 
         }

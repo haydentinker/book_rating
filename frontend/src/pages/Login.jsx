@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { useAuth } from '../context/AuthContext';
 export const Login= () => {
+    const { token, setToken } = useAuth();
     const [password, setPassword] = useState("")
     const [email, setEmail] = useState("")
     const {enqueueSnackbar}=useSnackbar();
@@ -16,7 +18,8 @@ export const Login= () => {
         axios
             .post(`http://localhost:5555/auth/login`, data)
             .then(() => {
-                console.log(document.cookie)
+                const { newToken } = response.data; 
+                setToken( newToken );
                 enqueueSnackbar('Successfully logged in!', { variant: 'success' })
                 navigate('/');
             }).catch((error) => {

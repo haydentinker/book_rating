@@ -7,7 +7,9 @@ import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 import { BooksCard } from '../components/home/BooksCard';
 import { BooksTable } from '../components/home/BooksTable';
+import { useAuth } from '../context/AuthContext';
 export const Home = () => {
+    const { token, setToken } = useAuth();
     const [books, setBooks] = useState([]);
     const [currentPage,setCurrentPage]=useState(1);
     const [currentLimit,setCurrentLimit]=useState(10);
@@ -23,7 +25,9 @@ export const Home = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get('http://localhost:5555/books',{
+            .get('http://localhost:5555/books'
+               
+            ,{  
                 params:{
                     page:currentPage,
                     limit:currentLimit,
