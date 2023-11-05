@@ -24,4 +24,6 @@ const bookSchema = mongoose.Schema({
     image_url: String,
     small_image_url: String
 });
-export const Book=mongoose.model('Book',bookSchema);
+const Book = mongoose.model('Book', bookSchema);
+Book.createIndexes({ title: 'text', authors: 'text' });
+export default Book;

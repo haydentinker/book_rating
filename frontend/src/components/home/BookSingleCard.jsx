@@ -24,7 +24,7 @@ export const BookSingleCard = ({ book }) => {
             </div>
             
             {showModal && (
-                <BookModal book={book} onClose={() => setShowModal(false)}/>
+                <BookModal book={book} userReview={4} onClose={() => setShowModal(false)}/>
                     )}
         </div>
     )

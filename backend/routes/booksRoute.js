@@ -1,8 +1,37 @@
 import express from "express";
-import { Book } from "../models/bookModel.js";
+import Book from "../models/bookModel.js";
 import { AuthMiddleware } from "../middlewares/AuthMiddleware.js";
-const book_router=express.Router();
 
+
+
+const book_router=express.Router();
+book_router.use(AuthMiddleware)
+book_router.get('/search',async(request,response)=>{
+    const searchQuery=request.query.searchTerm || null;
+    const limit = parseInt(request.query.limit) || 10;
+    const page = parseInt(request.query.page) || 1; 
+    if (searchQuery===null){
+        return response.status(400).send({message:"No search term provided"})
+    }
+    try{
+        const books =await Book.aggregate().search({
+            text:{
+                query:searchQuery,
+                path:["title",'authors']
+            }
+        }).skip((page-1)*limit).limit(limit)
+   
+     
+    return response.status(200).send({
+        page:page,
+        data:books
+    })
+}   catch (error) {
+    console.log(error.message);
+    return response.status(500).send({ message: error.message });
+  }
+    }
+)
 book_router.get('/',async(request,response)=>{
     const limit = parseInt(request.query.limit) || 10;
     const page = parseInt(request.query.page) || 1; 

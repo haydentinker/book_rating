@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,11 +22,15 @@ ChartJS.register(
   );
 
   const options = {
+    layout: {
+      padding: 20
+  },
     responsive: true,
     plugins: {
       legend: {
-        position: 'right',
+        display:false
       },
+      
     },
   };
   const labels=["1","2","3","4","5"]
@@ -37,9 +42,10 @@ ChartJS.register(
             {
             label:"Reviews",
             data:data.data,
-            backgroundColor:'rgba(255,99,132,0.5)'
+            backgroundColor:'rgba(255,99,132,0.5)',
         }
-        ]
+        
+        ],
       };
     return <Bar options={options} data={chartData}/>
   }

@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
   // Function to set the authentication token
   const setToken = (newToken) => {
     setToken_(newToken);
-    console.log(token)
+   
   };
 
   useEffect(() => {
