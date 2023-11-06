@@ -1,17 +1,17 @@
 import express from "express";
 import { Rating } from "../models/ratingModel.js";
-import { Book } from "../models/bookModel.js";
+import Book  from "../models/bookModel.js";
 import { AuthMiddleware } from "../middlewares/AuthMiddleware.js";
 const rating_router=express.Router();
 rating_router.use(AuthMiddleware)
 
-book_router.get('book/:id',async(request,response)=>{
+rating_router.get('book/:id',async(request,response)=>{
     try{
         
         const {id}=request.params;
         const book=await Book.findById(id);
         const BookId=book.book_id
-        const rating=await Rating.find({book_id:{$eq:BookId}})
+        const rating=await Rating.find({book_id:{$eq:BookId},user_id:{$eq:request.user._id}})
         return response.status(200).send(rating)
     }
     catch (error) {
@@ -19,7 +19,7 @@ book_router.get('book/:id',async(request,response)=>{
         return response.status(500).send({ message: error.message });
     }
 })
-rating_router_router.put('/:id',async(request,response)=>{
+rating_router.put('/:id',async(request,response)=>{
     try{
         if (
             !request.body.rating
@@ -41,7 +41,7 @@ rating_router_router.put('/:id',async(request,response)=>{
         }
         if (result.user_id===request.user._id){
             await Rating.findByIdAndUpdate(id,{
-                book_id:id,
+                book_id:result.book_id,
                 user_id:request.user._id,
                 rating:request.body.rating
             })

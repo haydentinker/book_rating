@@ -3,9 +3,8 @@ import { TOKEN_KEY } from "../config.js";
 import jsonwebtoken from 'jsonwebtoken';
 
 export function AuthMiddleware(request,response,next){
- 
+    console.log(request.headers)
     const authorizationHeader = request.headers['authorization'];
-
     if (!authorizationHeader) {
         console.log('no')
         return response.redirect(301, 'http://localhost:5173/login/');

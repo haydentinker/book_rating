@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 
 
 export async function SignUp (request,response,next){
+    
     try{
         const {email,password,username,createdAt}=request.body
         const existingUser= await User.findOne({email});
@@ -12,10 +13,12 @@ export async function SignUp (request,response,next){
         }
         const user= await User.create({email,password,username,createdAt});
         const token =createSecretToken(user._id);
+        // console.log(token)
         response
             .status(201)
             .json({message:"User signed up successfully",success:true,token:token})
         next();
+        
     }catch(error){
         console.error(error);
     }

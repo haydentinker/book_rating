@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
+import axios from '../api/axios'
 import Spinner from '../components/Spinner';
 import { Link } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
@@ -28,9 +28,9 @@ export const Home = () => {
         }
     }
     useEffect(() => {
-        var url='http://localhost:5555/books'
+        var url='/books'
         if (searchTerm!=""){
-            url='http://localhost:5555/books/search'
+            url='/books/search'
         }
         setLoading(true);
         axios

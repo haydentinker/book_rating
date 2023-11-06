@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import { PORT, mongoDBURL } from "./config.js";
 import book_router from "./routes/booksRoute.js";
+import rating_router from "./routes/reviewRoute.js";
 import auth_router from "./routes/authRoute.js";
 import cookieParser from "cookie-parser";
 import cors from 'cors';
@@ -20,7 +21,7 @@ app.get("/", (request, response) => {
 app.use(cookieParser())
 app.use('/books',book_router);
 app.use('/auth',auth_router);
-
+app.use('/rating',rating_router);
 mongoose
   .connect(mongoDBURL,{
     useNewUrlParser:true,
