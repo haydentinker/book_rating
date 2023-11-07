@@ -5,14 +5,16 @@ import { AuthMiddleware } from "../middlewares/AuthMiddleware.js";
 const rating_router=express.Router();
 rating_router.use(AuthMiddleware)
 
-rating_router.get('book/:id',async(request,response)=>{
+rating_router.get('/book/:id',async(request,response)=>{
     try{
         
         const {id}=request.params;
+        
         const book=await Book.findById(id);
         const BookId=book.book_id
         const rating=await Rating.find({book_id:{$eq:BookId},user_id:{$eq:request.user._id}})
-        return response.status(200).send(rating)
+
+        return response.status(200).send({message:'rating not found',rating:null})
     }
     catch (error) {
         console.log(error.message);
@@ -80,23 +82,33 @@ rating_router.delete('/:id',async(request,response)=>{
 })
 rating_router.post("/", async (request, response) => {
   try {
-    if (
-      !request.body.rating ||
-      !request.body.book_id
-    ) {
-      return response
-        .status(400)
-        .send({
-          message: "Send all required fields: book_id and rating",
-        });
+    if (!request.body.rating || !request.body.book_id) {
+      return response.status(400).send({
+        message: "Send all required fields: book_id and rating",
+      });
     }
-    const newRating={
-        user_id:request.user._id,
-        book_id:request.body.book_id,
-        rating:request.body.rating
+
+    const user_id = request.user._id;
+    const book_id = request.body.book_id;
+
+    // Check if the user has already reviewed the book
+    const existingRating = await Rating.findOne({ user_id, book_id });
+
+    if (existingRating) {
+      return response.status(400).send({
+        message: "You have already reviewed this book.",
+      });
     }
-    const rating=await Rating.create(newRating)
-    return response.status(200).send('Rating created');
+
+    const newRating = {
+      user_id: user_id,
+      book_id: book_id,
+      rating: request.body.rating,
+    };
+
+    const rating = await Rating.create(newRating);
+
+    return response.status(200).send({ message: 'Rating created', rating_id: rating._id });
   } catch (error) {
     console.log(error.message);
     return response.status(500).send({ message: error.message });

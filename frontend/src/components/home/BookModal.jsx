@@ -1,12 +1,48 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AiOutlineClose } from 'react-icons/ai'
 import { PiBookOpenTextLight } from 'react-icons/pi'
 import { BiUserCircle } from 'react-icons/bi'
 import StarRatings from 'react-star-ratings';
 import { MdOutlineStar, MdOutlineStarHalf, MdOutlineStarOutline } from 'react-icons/md';
 import { BarChart } from '../BarChart';
-export const BookModal = ({ book, onClose, userReview }) => {
-    const [newRating,setNewRating]=useState(userReview)
+import { useAuth } from '../../context/AuthContext';
+import axios from 'axios';
+export const BookModal = ({ book, onClose }) => {
+
+    const currentUser = useAuth()
+    const [loading, setLoading] = useState(false)
+    const [newRating, setNewRating] = useState(-1)
+    const [rating, setRating] = useState(null)
+    useEffect(() => {
+        setLoading(true);
+        axios.get(`http://localhost:5555/rating/book/${book._id}`, { headers: { Authorization: `Bearer ${currentUser}`, } })
+            .then((response) => {
+                if (response.data.rating != null) {
+                    setRating(response.data.rating)
+                    setNewRating(rating)
+                }
+                setLoading(false);
+            }).catch((error) => {
+                console.log(error);
+                setLoading(false);
+            })
+    }, [])
+    useEffect(() => {
+        if (newRating != -1) {
+            console.log(newRating)
+            console.log(rating)
+            if (rating === null) {
+                axios.post(`http://localhost:5555/rating/` ,{book_id:book._id,rating:newRating}, {headers: { Authorization: `Bearer ${currentUser}`, }})
+                    .then((response) => {
+                        setNewRating(response.rating)
+                        setLoading(false);
+                    }).catch((error) => {
+                        console.log(error);
+                        setLoading(false);
+                    })
+            }
+        }
+    }, [newRating])
     const data = {
         "1": book.ratings_1 ?? 0,
         "2": book.ratings_2 ?? 0,
@@ -15,14 +51,20 @@ export const BookModal = ({ book, onClose, userReview }) => {
         "5": book.ratings_5 ?? 0,
 
     }
-    const handleChangeRating=(rating)=>{
+    // const handleClose=()=>{
+    //     if (newRating!=userReview.rating){
+
+    //     }
+    // }
+    const handleChangeRating = (rating) => {
+
         setNewRating(rating)
     }
     return (
         <div className='fixed bg-black bg-opacity-60 top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center' onClick={onClose}>
             <div onClick={(event) => event.stopPropagation()} className='w-[600px] max-w-full bg-slate-600 rounded-xl p-4 flex flex-col relative border-2 border-gray-500 '>
                 <AiOutlineClose className='absolute right-6 top-3 text-2xl text-red-600 cursor-pointer' onClick={onClose} />
-               
+
                 <div className='flex justify-start flex-col'>
                     <div className='flex justify-start items-center gap-x-2 text-white'>
                         <PiBookOpenTextLight className=' text-2xl text-gray-400' />
@@ -41,7 +83,7 @@ export const BookModal = ({ book, onClose, userReview }) => {
                         <div className='whitespace-nowrap'>
 
                             <h3>
-                                Your Rating: <StarRatings changeRating={handleChangeRating} starDimension='20px' starSpacing='5px'  starHoverColor='white'starRatedColor='yellow' starEmptyColor='black' rating={newRating}/>
+                                Your Rating: <StarRatings changeRating={handleChangeRating} starDimension='20px' starSpacing='5px' starHoverColor='white' starRatedColor='yellow' starEmptyColor='black' rating={newRating} />
                             </h3>
 
                         </div>

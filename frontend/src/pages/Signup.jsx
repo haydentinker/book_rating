@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import axios from '../api/axios'
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { useAuth } from '../context/AuthContext';
-
-const signupURL = 'auth/signup'
+import { setAuth } from "../context/AuthContext";
+import axios from "axios";
+const signupURL = 'http://localhost:5555/auth/signup'
 export const Signup = () => {
+    const setToken=setAuth()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [email, setEmail] = useState("")
     const { enqueueSnackbar } = useSnackbar();
-    const { setAuth} = useAuth()
     const navigate = useNavigate();
     const handleSignUp = async (event) => {
         event.preventDefault();
@@ -22,8 +21,7 @@ export const Signup = () => {
         try {
             const response = await axios.post(signupURL, data);
             const newToken = response.data['token'];
-            setAuth(newToken)
-           
+            setToken(newToken)
             enqueueSnackbar('Successfully signed up!', { variant: 'success' })
             navigate('/');
         } catch (error) {
