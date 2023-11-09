@@ -11,38 +11,73 @@ export const BookModal = ({ book, onClose }) => {
 
     const currentUser = useAuth()
     const [loading, setLoading] = useState(false)
-    const [newRating, setNewRating] = useState(-1)
+    const [userRating, setUserRating] = useState(-1);
     const [rating, setRating] = useState(null)
     useEffect(() => {
         setLoading(true);
-        axios.get(`http://localhost:5555/rating/book/${book._id}`, { headers: { Authorization: `Bearer ${currentUser}`, } })
+        axios
+            .get(`http://localhost:5555/rating/book/${book._id}`, {
+                headers: {
+                    Authorization: `Bearer ${currentUser}`,
+                },
+            })
             .then((response) => {
-                if (response.data.rating != null) {
+                if (response.data.rating !== null) {
+                    setUserRating(response.data.rating.rating); 
                     setRating(response.data.rating)
-                    setNewRating(rating)
                 }
                 setLoading(false);
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 console.log(error);
                 setLoading(false);
-            })
-    }, [])
+            });
+    }, []);
     useEffect(() => {
-        if (newRating != -1) {
-            console.log(newRating)
-            console.log(rating)
+        if (userRating !== -1 && userRating !== rating?.rating) {
+            setLoading(true);
+    
             if (rating === null) {
-                axios.post(`http://localhost:5555/rating/` ,{book_id:book._id,rating:newRating}, {headers: { Authorization: `Bearer ${currentUser}`, }})
+                axios
+                    .post(
+                        'http://localhost:5555/rating',
+                        { book_id: book._id, rating: userRating },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${currentUser}`,
+                            },
+                        }
+                    )
                     .then((response) => {
-                        setNewRating(response.rating)
-                        setLoading(false);
-                    }).catch((error) => {
-                        console.log(error);
+                        setRating(response.data.rating);
                         setLoading(false);
                     })
+                    .catch((error) => {
+                        console.log(error);
+                        setLoading(false);
+                    });
+            } else {
+                axios
+                    .put(
+                        `http://localhost:5555/rating/${rating._id}`,
+                        { rating: userRating },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${currentUser}`,
+                            },
+                        }
+                    )
+                    .then((response) => {
+                        setRating(response.data.rating);
+                        setLoading(false);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        setLoading(false);
+                    });
             }
         }
-    }, [newRating])
+    }, [userRating]);
     const data = {
         "1": book.ratings_1 ?? 0,
         "2": book.ratings_2 ?? 0,
@@ -51,14 +86,9 @@ export const BookModal = ({ book, onClose }) => {
         "5": book.ratings_5 ?? 0,
 
     }
-    // const handleClose=()=>{
-    //     if (newRating!=userReview.rating){
-
-    //     }
-    // }
+ 
     const handleChangeRating = (rating) => {
-
-        setNewRating(rating)
+        setUserRating(rating);
     }
     return (
         <div className='fixed bg-black bg-opacity-60 top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center' onClick={onClose}>
@@ -83,7 +113,7 @@ export const BookModal = ({ book, onClose }) => {
                         <div className='whitespace-nowrap'>
 
                             <h3>
-                                Your Rating: <StarRatings changeRating={handleChangeRating} starDimension='20px' starSpacing='5px' starHoverColor='white' starRatedColor='yellow' starEmptyColor='black' rating={newRating} />
+                                Your Rating: <StarRatings changeRating={handleChangeRating} starDimension='20px' starSpacing='5px' starHoverColor='white' starRatedColor='yellow' starEmptyColor='black' rating={userRating} />
                             </h3>
 
                         </div>

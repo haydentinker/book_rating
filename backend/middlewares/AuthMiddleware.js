@@ -4,7 +4,6 @@ import jsonwebtoken from 'jsonwebtoken';
 
 export function AuthMiddleware(request,response,next){
     const authorizationHeader = request.headers['authorization'];
-    console.log(request.headers)
     // if (!authorizationHeader) {
     //     console.log('no')
     //     return response.redirect(301, 'localhost:5173/login/');

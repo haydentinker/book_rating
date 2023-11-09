@@ -27,6 +27,7 @@ export const Home = () => {
         }
     }
     useEffect(() => {
+        console.log(currentUser)
         var url = 'http://localhost:5555/books'
         if (searchTerm != "") {
             url = 'http://localhost:5555/books/search'
