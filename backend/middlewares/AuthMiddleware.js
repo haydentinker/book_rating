@@ -4,20 +4,12 @@ import jsonwebtoken from 'jsonwebtoken';
 
 export function AuthMiddleware(request,response,next){
     const authorizationHeader = request.headers['authorization'];
-    // if (!authorizationHeader) {
-    //     console.log('no')
-    //     return response.redirect(301, 'localhost:5173/login/');
-    // }
     const token = authorizationHeader.split(' ')[1]; 
 
-    // if (!token) {
-        
-    //     return response.redirect(301, 'localhost:5173/login');
-    // }
     jsonwebtoken.verify(token,TOKEN_KEY, async(err,data)=>{
         if(err){
             console.log('bad token')
-            return response.redirect(301,'localhost:5173/signUp/')
+            return response.status(401).send({Message:"Bad Token"})
         }else{
             const user=await User.findById(data.id)
             if (user){

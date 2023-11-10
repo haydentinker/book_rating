@@ -1,11 +1,7 @@
 import express from "express";
 import Book from "../models/bookModel.js";
-import { AuthMiddleware } from "../middlewares/AuthMiddleware.js";
-
-
 
 const book_router=express.Router();
-book_router.use(AuthMiddleware)
 book_router.get('/search',async(request,response)=>{
     const searchQuery=request.query.searchTerm || null;
     const limit = parseInt(request.query.limit) || 10;

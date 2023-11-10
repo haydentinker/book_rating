@@ -6,14 +6,14 @@ import bcrypt from 'bcrypt';
 export async function SignUp (request,response,next){
     
     try{
-        const {email,password,username,createdAt}=request.body
+        const {email,password,createdAt}=request.body
         const existingUser= await User.findOne({email});
         if (existingUser){
             return response.json({message:"user already exists"})
         }
-        const user= await User.create({email,password,username,createdAt});
+        const user= await User.create({email,password,createdAt});
         const token =createSecretToken(user._id);
-        // console.log(token)
+   
         response
             .status(201)
             .json({message:"User signed up successfully",success:true,token:token})
@@ -43,7 +43,7 @@ export async function Login (request,response,next){
             withCredentials:true,
             httpOnly:false
         })
-        response.status(201).json({message:"User logged in successfully", success:true})
+        response.status(201).json({message:"User logged in successfully", success:true,token:token})
         next()
     }catch(error){
         console.error(error)

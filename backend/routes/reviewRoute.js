@@ -17,7 +17,6 @@ rating_router.get('/book/:id', async (request, response) => {
       book_id: BookId,
       user_id: request.user._id
     });
-    console.log(BookId)
     if (!rating) {
       return response.status(404).send({ message: 'Rating not found', rating: null });
     }
@@ -47,7 +46,8 @@ rating_router.put('/:id', async (request, response) => {
           message: error.message,
         });
     }
-    if (result.user_id === request.user._id) {
+  
+    if (result.user_id.equals(request.user._id)) {
       await Rating.findByIdAndUpdate(id, {
         book_id: result.book_id,
         user_id: request.user._id,
@@ -87,8 +87,6 @@ rating_router.delete('/:id', async (request, response) => {
   }
 })
 rating_router.post("/", async (request, response) => {
-  console.log(request.body.book_id)
-  console.log(request.body.rating)
   try {
     if (!request.body.rating || !request.body.book_id) {
       return response.status(400).send({

@@ -5,12 +5,15 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 import { BooksCard } from '../components/home/BooksCard';
-import { BooksTable } from '../components/home/BooksTable';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { setAuth } from '../context/AuthContext';
 import { SearchBar } from '../components/SearchBar';
 import axios from 'axios';
 export const Home = () => {
-    const currentUser = useAuth()
+    const navigate = useNavigate();
+    const currentUser=useAuth()
+    const setCurrentUser=setAuth()
     const [searchTerm, setSearch] = useState("");
     const [books, setBooks] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -27,13 +30,12 @@ export const Home = () => {
         }
     }
     useEffect(() => {
-        console.log(currentUser)
         var url = 'http://localhost:5555/books'
         if (searchTerm != "") {
             url = 'http://localhost:5555/books/search'
         }
         setLoading(true);
-        axios.get('http://localhost:5555/books/' , {headers: {Authorization: `Bearer ${currentUser}`, },params: {searchTerm: searchTerm,page: currentPage, limit: currentLimit,sortBy: sortBy}})
+        axios.get('http://localhost:5555/books/', { headers: { Authorization: `Bearer ${currentUser}`, }, params: { searchTerm: searchTerm, page: currentPage, limit: currentLimit, sortBy: sortBy } })
             .then((response) => {
 
                 setBooks(response.data.data);
@@ -44,6 +46,9 @@ export const Home = () => {
                 setLoading(false);
             })
     }, [currentUser, searchTerm, currentPage, currentLimit, sortBy]);
+    const handleLoginButton = () => {
+        navigate('/login')
+    }
     return (
         <div className='p4-4 '>
 
@@ -62,7 +67,9 @@ export const Home = () => {
                     <option value='title'>Title</option>
                     <option value='authors'>Author</option>
                 </select>
+                {currentUser != null ? <button className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg' onClick={setCurrentUser(null)}>Log out</button> : <button className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg ' onClick={handleLoginButton}>Login</button>}
             </div>
+
             {loading ? (
                 <Spinner />
             ) :

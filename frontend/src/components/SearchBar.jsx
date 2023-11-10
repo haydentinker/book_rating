@@ -16,7 +16,7 @@ export const SearchBar = ({handleSearch}) => {
    placeholder="Search here"
    value={searchInput} 
    onChange={handleInputChange}/>
-   <button className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg ml-2'  type='submit'>Search</button>
+   <button className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg ml-3'  type='submit'>Search</button>
    </form>
   )
 }

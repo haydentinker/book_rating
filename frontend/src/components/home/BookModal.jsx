@@ -6,9 +6,10 @@ import StarRatings from 'react-star-ratings';
 import { MdOutlineStar, MdOutlineStarHalf, MdOutlineStarOutline } from 'react-icons/md';
 import { BarChart } from '../BarChart';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 export const BookModal = ({ book, onClose }) => {
-
+    const navigate=useNavigate();
     const currentUser = useAuth()
     const [loading, setLoading] = useState(false)
     const [userRating, setUserRating] = useState(-1);
@@ -26,12 +27,9 @@ export const BookModal = ({ book, onClose }) => {
                     setUserRating(response.data.rating.rating); 
                     setRating(response.data.rating)
                 }
-                setLoading(false);
+                
             })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-            });
+            setLoading(false);
     }, []);
     useEffect(() => {
         if (userRating !== -1 && userRating !== rating?.rating) {
@@ -86,7 +84,9 @@ export const BookModal = ({ book, onClose }) => {
         "5": book.ratings_5 ?? 0,
 
     }
- 
+    const handleLoginButton=()=>{
+        navigate('/login')
+    }
     const handleChangeRating = (rating) => {
         setUserRating(rating);
     }
@@ -111,10 +111,12 @@ export const BookModal = ({ book, onClose }) => {
                             {book.average_rating} / 5
                         </div>
                         <div className='whitespace-nowrap'>
-
+                            {currentUser!=null ? 
                             <h3>
                                 Your Rating: <StarRatings changeRating={handleChangeRating} starDimension='20px' starSpacing='5px' starHoverColor='white' starRatedColor='yellow' starEmptyColor='black' rating={userRating} />
-                            </h3>
+                            </h3>:
+                             <button className='text-white border border-gray-300 px-3 py-1 rounded-md bg-gray-700 hover:bg-gray-800 my-2' onClick={handleLoginButton}>Login to rate book</button>
+                            }
 
                         </div>
 
